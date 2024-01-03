@@ -44,6 +44,8 @@ local function loadConfig()
   env.keybinds = env.keybinds or {
     left = {{"left"}},
     right = {{"right"}},
+    fastLeft = {{"control", "left"}},
+    fastRight = {{"control", "right"}},
     up = {{"up"}},
     down = {{"down"}},
     home = {{"home"}},
@@ -56,7 +58,7 @@ local function loadConfig()
     deleteLine = {{"control", "delete"}, {"shift", "delete"}},
     newline = {{"enter"}},
 
-    save = {{"control", "s"}},
+    save = {{"control", "s"}, {"control", "o"}},
     close = {{"control", "w"}},
     find = {{"control", "f"}},
     findnext = {{"control", "g"}, {"control", "n"}, {"f3"}},
@@ -325,6 +327,27 @@ local function right(n)
   end
 end
 
+local function fastLeft()
+    local cbx, cby = getNormalizedCursor()
+    if cbx <= 1 then
+        left()
+    else
+        local value = ((unicode.sub(line(), 0, cbx - 1):find("%s[^%s]+%s*$") or 0) - cbx)
+        setCursor(cbx + value + 1, cby)
+    end
+end
+
+local function fastRight()
+    local cbx = getNormalizedCursor()
+    local be = unicode.wlen(line()) + 1
+    local value = (((line():find("%s[^%s]", cbx + 1) or be) - cbx) or 1)
+    if value == 0 then
+        right(1)
+    else
+        right(value)
+    end
+end
+
 local function up(n)
   n = n or 1
   local cbx, cby = getCursor()
@@ -494,6 +517,8 @@ end
 local keyBindHandlers = {
   left = left,
   right = right,
+  fastLeft = fastLeft,
+  fastRight = fastRight,
   up = up,
   down = down,
   home = home,
