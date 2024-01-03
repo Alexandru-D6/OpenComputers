@@ -75,6 +75,7 @@ minecraft {
     runs {
         client {
             workingDirectory project.file('run')
+            project.delete(project.file('run/config/opencomputers/settings.conf'))
             jvmArgs '-Dfml.coreMods.load=li.cil.oc.common.launch.TransformerLoader'
 
             property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
